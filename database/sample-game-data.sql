@@ -1,5 +1,4 @@
 -- Sample Game Data for MAKNA Heritage Sites
--- Insert overview content and trivia questions for Borobudur and Prambanan
 
 -- Overview Content for Borobudur
 INSERT INTO public.situs_overview (situs_uid, title, content, order_sequence) VALUES

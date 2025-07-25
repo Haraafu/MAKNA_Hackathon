@@ -95,15 +95,17 @@ export default function AuthScreen() {
           Alert.alert('Error', result.error.message);
         }
       } else {
+        // Registration successful - show success message and auto-redirect
         Alert.alert(
           'Registrasi Berhasil!', 
-          'Akun Anda telah dibuat. Silakan login dengan email dan password yang baru dibuat.',
+          'Akun Anda telah dibuat. Anda akan diarahkan ke halaman login dalam 2 detik.',
           [
             {
               text: 'Login Sekarang',
               onPress: () => {
+                // Immediate redirect to sign in screen
                 setCurrentScreen('signin');
-                // Keep email, clear others
+                // Keep email for convenience, clear others
                 setPassword('');
                 setConfirmPassword('');
                 setFirstName('');
@@ -112,6 +114,16 @@ export default function AuthScreen() {
             }
           ]
         );
+        
+        // Auto-redirect after 2 seconds if user doesn't press button
+        setTimeout(() => {
+          setCurrentScreen('signin');
+          // Keep email for convenience, clear others
+          setPassword('');
+          setConfirmPassword('');
+          setFirstName('');
+          setLastName('');
+        }, 2000);
       }
     } catch (err) {
       console.error('Register UI error:', err);

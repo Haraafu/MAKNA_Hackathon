@@ -1,5 +1,4 @@
 -- MAKNA Game Mechanism Database Schema
--- This extends the existing schema with overview content and trivia system
 
 -- Situs Overview Content Table
 CREATE TABLE IF NOT EXISTS public.situs_overview (

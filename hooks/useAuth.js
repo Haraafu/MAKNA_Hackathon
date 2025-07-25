@@ -135,7 +135,7 @@ export function useAuth() {
   };
 
   // Manual profile creation
-  const createProfile = async (userId, email, firstname, lastname) => {
+  const createProfile = async (userId, email, firstname, lastname, password) => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -144,7 +144,7 @@ export function useAuth() {
           email,
           firstname,
           lastname: lastname || '',
-          password: '', // We don't store actual passwords here
+          password: password || '',
           total_badges: 0
         })
         .select()
@@ -183,6 +183,7 @@ export function useAuth() {
           data: {
             firstname,
             lastname,
+            password  // Pass password in metadata for database trigger
           }
         }
       });
@@ -218,7 +219,8 @@ export function useAuth() {
               authData.user.id, 
               authData.user.email, 
               firstname, 
-              lastname
+              lastname,
+              password  // Pass password to manual creation
             );
             console.log('✅ Profile created manually');
           } catch (profileError) {
