@@ -105,7 +105,7 @@ export default function TestQRData({ onTripStart, onClose }) {
                 <Text className="text-batik-600 text-sm">{qr.location}</Text>
                 <Text className="text-batik-500 text-xs">QR: {qr.qrData}</Text>
               </View>
-              <Ionicons name="chevron-forward" size={20} color="#6F4E37" />
+              <Ionicons name="chevron-forward" size={20} color="#461C07" />
             </View>
           </TouchableOpacity>
         ))}

@@ -12,6 +12,7 @@ import SitusDetailScreen from './screens/SitusDetailScreen';
 import TripProgressScreen from './screens/TripProgressScreen';
 import TestQRData from './TestQRData';
 import TestAuthFlow from './TestAuthFlow';
+import Chatbot from './Chatbot';
 
 export default function TabNavigation() {
   const [activeTab, setActiveTab] = useState('Home');
@@ -48,7 +49,7 @@ export default function TabNavigation() {
       name: 'Leaderboard', 
       icon: (active) => active ? <LeaderboardIcon2 color="#461C07" size={24} /> : <LeaderboardIcon color="#9CA3AF" size={24} />,
       component: LeaderboardScreen, 
-      label: 'Leaderboard' 
+      label: 'Rank' 
     },
     { 
       name: 'Profile', 
@@ -135,8 +136,15 @@ export default function TabNavigation() {
                 {tab.isCenter ? (
                   <View 
                     className="bg-[#461C07] rounded-full w-16 h-16 items-center justify-center -mt-8"
+                    style={{
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 4,
+                      elevation: 5,
+                    }}
                   >
-                    <View className="w-8 h-8">
+                    <View className="w-8 h-8 items-center justify-center">
                       {tab.icon(false)}
                     </View>
                   </View>
@@ -221,6 +229,9 @@ export default function TabNavigation() {
           onClose={() => setShowTestAuth(false)}
         />
       </Modal>
+
+      {/* Chatbot with animation effects, only shown on Home screen */}
+      <Chatbot currentScreen={activeTab} />
     </View>
   );
 }

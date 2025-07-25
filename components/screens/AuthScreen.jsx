@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthContext } from '../../contexts/AuthContext';
-import LogoIcon from '../LogoIcon';
 
 export default function AuthScreen() {
   const [currentScreen, setCurrentScreen] = useState('welcome'); // welcome, signin, register-email, register-info
@@ -142,7 +141,13 @@ export default function AuthScreen() {
     return (
       <View className="flex-1 bg-white">
         <View className="flex-1 justify-center items-center px-6">
-          <View className="mb-8 items-center">
+          <View 
+            className="mb-8 items-center"
+            style={{
+              opacity: 1,
+              transform: [{ scale: 1 }],
+            }}
+          >
             <Text 
               className="text-2xl text-gray-800 mb-6"
               style={{
@@ -155,13 +160,17 @@ export default function AuthScreen() {
             </Text>
             
             <View className="mb-8">
-              <LogoIcon width={125} height={126} />
+              <Image 
+                source={require('../../assets/icon.png')} 
+                style={{ width: 125, height: 126 }}
+                resizeMode="contain"
+              />
             </View>
             
             <Text 
               className="text-3xl mb-2"
               style={{
-                fontFamily: 'Poppins_700Bold',
+                fontFamily: 'AveriaSerifLibre_400Regular',
                 fontSize: 32,
                 color: '#461C07',
                 letterSpacing: 2

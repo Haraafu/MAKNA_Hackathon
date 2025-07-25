@@ -118,7 +118,7 @@ export default function TripProgressScreen({ tripData, onTripComplete, onClose }
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-batik-50">
-        <Ionicons name="hourglass-outline" size={48} color="#6F4E37" />
+        <Ionicons name="hourglass-outline" size={48} color="#461C07" />
         <Text className="text-batik-700 text-lg font-bold mt-4">Memuat Perjalanan...</Text>
       </View>
     );
@@ -273,7 +273,7 @@ export default function TripProgressScreen({ tripData, onTripComplete, onClose }
             <View className="flex-row items-center justify-between mb-4">
               <Text className="text-batik-700 text-lg font-bold">Tambah Catatan</Text>
               <TouchableOpacity onPress={() => setShowNotesModal(false)}>
-                <Ionicons name="close" size={24} color="#6F4E37" />
+                <Ionicons name="close" size={24} color="#461C07" />
               </TouchableOpacity>
             </View>
             

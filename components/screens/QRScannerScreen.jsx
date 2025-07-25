@@ -227,7 +227,7 @@ export default function QRScannerScreen({ onSitusFound, onClose }) {
         {loading && (
           <View className="absolute inset-0 bg-black/50 justify-center items-center">
             <View className="bg-white rounded-xl p-6 items-center">
-              <Ionicons name="hourglass-outline" size={32} color="#6F4E37" />
+              <Ionicons name="hourglass-outline" size={32} color="#461C07" />
               <Text className="text-batik-700 font-bold mt-2">Memproses...</Text>
             </View>
           </View>
@@ -248,7 +248,7 @@ export default function QRScannerScreen({ onSitusFound, onClose }) {
   if (hasPermission === false) {
     return (
       <View className="flex-1 justify-center items-center bg-batik-50 px-6">
-        <Ionicons name="camera-outline" size={64} color="#6F4E37" />
+        <Ionicons name="camera-outline" size={64} color="#461C07" />
         <Text className="text-batik-700 text-lg font-bold mt-4 text-center">
           Izin Kamera Diperlukan
         </Text>
@@ -320,7 +320,7 @@ export default function QRScannerScreen({ onSitusFound, onClose }) {
       {loading && (
         <View className="absolute inset-0 bg-black/50 justify-center items-center">
           <View className="bg-white rounded-xl p-6 items-center">
-            <Ionicons name="hourglass-outline" size={32} color="#6F4E37" />
+            <Ionicons name="hourglass-outline" size={32} color="#461C07" />
             <Text className="text-batik-700 font-bold mt-2">Memproses...</Text>
           </View>
         </View>

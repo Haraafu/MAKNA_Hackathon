@@ -1,90 +1,119 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Animated } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import BatikPattern from './BatikPattern';
+import { View, Text, Image, Animated } from 'react-native';
 
 export default function SplashScreen({ onFinish }) {
-  const [fadeAnim] = useState(new Animated.Value(0));
-  const [scaleAnim] = useState(new Animated.Value(0.8));
+  const [logoSlideAnim] = useState(new Animated.Value(200)); // Start from bottom
+  const [logoOpacity] = useState(new Animated.Value(0));
+  const [textOpacity] = useState(new Animated.Value(0));
+  const [typingText, setTypingText] = useState('');
+  const [screenOpacity] = useState(new Animated.Value(1));
+  
+  const fullText = 'MAKNA';
 
   useEffect(() => {
-    // Start animations
+    // 1. Logo slide animation (dari bawah ke tengah atas)
     Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 1000,
+      Animated.timing(logoSlideAnim, {
+        toValue: 0,
+        duration: 500,
         useNativeDriver: true,
       }),
-      Animated.spring(scaleAnim, {
+      Animated.timing(logoOpacity, {
         toValue: 1,
-        tension: 20,
-        friction: 7,
+        duration: 800,
         useNativeDriver: true,
       }),
-    ]).start();
+    ]).start(() => {
+      // 2. Setelah logo selesai, tunggu 500ms lalu mulai typing effect
+      setTimeout(() => {
+        // Show text container
+        Animated.timing(textOpacity, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }).start();
 
-    // Auto finish after 2.5 seconds
-    const timer = setTimeout(() => {
-      if (onFinish) onFinish();
-    }, 2500);
-
-    return () => clearTimeout(timer);
+        // 3. Typing animation
+        let currentIndex = 0;
+        const typingInterval = setInterval(() => {
+          if (currentIndex <= fullText.length) {
+            setTypingText(fullText.substring(0, currentIndex));
+            currentIndex++;
+          } else {
+            clearInterval(typingInterval);
+            // 4. Setelah typing selesai, tunggu 800ms lalu fade ke auth screen
+            setTimeout(() => {
+              Animated.timing(screenOpacity, {
+                toValue: 0,
+                duration: 500,
+                useNativeDriver: true,
+              }).start(() => {
+                if (onFinish) onFinish();
+              });
+            }, 800);
+          }
+        }, 100); // 150ms per karakter
+      }, 500);
+    });
   }, []);
 
   return (
-    <View className="flex-1 bg-batik-700 justify-center items-center relative">
-      <BatikPattern className="opacity-10" />
+    <Animated.View 
+      className="flex-1 justify-center px-6" 
+      style={{ 
+        backgroundColor: '#461C07',
+        opacity: screenOpacity 
+      }}
+    >
       
-      <Animated.View 
-        className="items-center relative z-10"
+      <View 
+        className="mb-8 items-center"
         style={{
-          opacity: fadeAnim,
-          transform: [{ scale: scaleAnim }],
+          marginTop: -130,
         }}
       >
-        {/* App Logo */}
-        <View className="bg-batik-600 w-24 h-24 rounded-full justify-center items-center mb-6 border-4 border-batik-100">
-          <Ionicons name="library" size={48} color="#F5EFE7" />
-        </View>
+        <Text 
+          style={{
+            fontFamily: 'Poppins_400Regular',
+            fontSize: 24,
+            color: 'transparent',
+            marginBottom: 24
+          }}
+        >
+          Welcome to
+        </Text>
         
-        {/* App Name */}
-        <Text className="text-batik-100 text-4xl font-bold mb-2">MAKNA</Text>
-        <Text className="text-batik-200 text-lg text-center">Jelajahi Cerita Budaya Indonesia</Text>
+        {/* App Logo with slide animation */}
+        <Animated.View 
+          className="mb-8"
+          style={{
+            opacity: logoOpacity,
+            transform: [{ translateY: logoSlideAnim }]
+          }}
+        >
+          <Image 
+            source={require('../assets/icon-2.png')} 
+            style={{ width: 125, height: 126 }}
+            resizeMode="contain"
+          />
+        </Animated.View>
         
-        {/* Tagline */}
-        <View className="mt-4">
-          <Text className="text-batik-300 text-sm text-center">Pengalaman Wisata Budaya Interaktif</Text>
-        </View>
-        
-        {/* Loading indicator */}
-        <View className="mt-8 flex-row space-x-2">
-          {[0, 1, 2].map((index) => (
-            <Animated.View
-              key={index}
-              className="w-2 h-2 bg-batik-200 rounded-full"
-              style={{
-                opacity: fadeAnim,
-                transform: [
-                  {
-                    scale: fadeAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0.5, 1],
-                    }),
-                  },
-                ],
-              }}
-            />
-          ))}
-        </View>
-      </Animated.View>
-      
-      {/* Bottom Text */}
-      <Animated.View 
-        className="absolute bottom-10 items-center"
-        style={{ opacity: fadeAnim }}
-      >
-        <Text className="text-batik-300 text-sm">Dibuat dengan ❤️ untuk Budaya Indonesia</Text>
-      </Animated.View>
-    </View>
+        {/* App Name with typing animation */}
+        <Animated.View style={{ opacity: textOpacity }}>
+          <Text 
+            style={{
+              fontFamily: 'AveriaSerifLibre_400Regular',
+              fontSize: 32,
+              color: '#CF964A',
+              letterSpacing: 2,
+              marginBottom: 8,
+              minHeight: 40, 
+            }}
+          >
+            {typingText}
+          </Text>
+        </Animated.View>
+      </View>
+    </Animated.View>
   );
 }

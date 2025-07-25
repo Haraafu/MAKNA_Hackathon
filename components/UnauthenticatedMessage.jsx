@@ -11,7 +11,7 @@ export default function UnauthenticatedMessage({
     <View className="flex-1 justify-center items-center px-6 bg-batik-50">
       <View className="bg-white rounded-2xl p-8 items-center border border-batik-200 shadow-lg">
         <View className="bg-batik-100 w-16 h-16 rounded-full justify-center items-center mb-4">
-          <Ionicons name="lock-closed" size={32} color="#6F4E37" />
+          <Ionicons name="lock-closed" size={32} color="#461C07" />
         </View>
         
         <Text className="text-batik-800 text-xl font-bold text-center mb-2">

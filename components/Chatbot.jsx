@@ -1,27 +1,97 @@
-import React, { useState } from 'react';
-import { View, Modal, Pressable, Platform, StyleSheet, Dimensions, Image } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Modal, Pressable, Platform, StyleSheet, Dimensions, Image, Animated } from 'react-native';
 import { useAuthContext } from '../contexts/AuthContext';
 import { WebView } from 'react-native-webview';
 
-export default function Chatbot() {
+export default function Chatbot({ currentScreen = 'Home' }) {
   const [visible, setVisible] = useState(false);
   const chatbotUrl = 'https://www.jotform.com/app/252044483767463';
   const { user } = useAuthContext();
+  
+  // Animation untuk efek kedip-kedip
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const glowAnim = useRef(new Animated.Value(0)).current;
 
-  if (!user) return null;
+  // Efek animasi kedip-kedip
+  useEffect(() => {
+    const createPulseAnimation = () => {
+      return Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+    };
+
+    const createGlowAnimation = () => {
+      return Animated.loop(
+        Animated.sequence([
+          Animated.timing(glowAnim, {
+            toValue: 1,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(glowAnim, {
+            toValue: 0,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+    };
+
+    const pulseAnimation = createPulseAnimation();
+    const glowAnimation = createGlowAnimation();
+    
+    pulseAnimation.start();
+    glowAnimation.start();
+
+    return () => {
+      pulseAnimation.stop();
+      glowAnimation.stop();
+    };
+  }, []);
+
+  // Hanya tampilkan chatbot di homepage
+  if (!user || currentScreen !== 'Home') return null;
 
   return (
     <>
-      <Pressable
-        style={styles.fab}
-        onPress={() => setVisible(true)}
-        accessibilityLabel="Open Chatbot"
+      <Animated.View
+        style={[
+          styles.fabContainer,
+          {
+            transform: [{ scale: pulseAnim }],
+          },
+        ]}
       >
-        <Image
-          source={require('../assets/Maya.png')}
-          style={styles.chatbotImage}
+        <Animated.View
+          style={[
+            styles.glowEffect,
+            {
+              opacity: glowAnim,
+            },
+          ]}
         />
-      </Pressable>
+        <Pressable
+          style={styles.fab}
+          onPress={() => setVisible(true)}
+          accessibilityLabel="Open Chatbot"
+        >
+          <Image
+            source={require('../assets/Maya.png')}
+            style={styles.chatbotImage}
+          />
+        </Pressable>
+      </Animated.View>
       <Modal
         visible={visible}
         animationType="slide"
@@ -58,12 +128,29 @@ export default function Chatbot() {
 
 const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
-  fab: {
+  fabContainer: {
     position: 'absolute',
-    right: width * -0.02,
-    bottom: height * 0.20, 
+    right: width * 0.02,
+    bottom: height * 0.70, 
     zIndex: 10000,
     elevation: 10,
+  },
+  glowEffect: {
+    position: 'absolute',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255, 215, 0, 0.3)',
+    top: -8,
+    left: -8,
+    zIndex: -1,
+  },
+  fab: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   chatbotImage: {
     width: 64,
@@ -86,12 +173,12 @@ const styles = StyleSheet.create({
     zIndex: 10001,
   },
   modalContent: {
-    width: 400,
+    width: 340,
     maxWidth: '90vw',
     height: 600,
     maxHeight: '90vh',
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 20,
     overflow: 'hidden',
     boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
   },
