@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthContext } from '../../contexts/AuthContext';
@@ -17,6 +17,28 @@ export default function AuthScreen() {
   const [lastName, setLastName] = useState('');
 
   const { signIn, signUp } = useAuthContext();
+  
+  // Ref to manage timeout
+  const redirectTimeoutRef = useRef(null);
+
+  // Function to redirect to sign in page and clean form
+  const redirectToSignIn = () => {
+    setCurrentScreen('signin');
+    // Keep email for convenience, clear others
+    setPassword('');
+    setConfirmPassword('');
+    setFirstName('');
+    setLastName('');
+  };
+
+  // Cleanup timeout on component unmount
+  useEffect(() => {
+    return () => {
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Logo SVG Component (simplified version of your icon)
 
@@ -97,32 +119,26 @@ export default function AuthScreen() {
       } else {
         // Registration successful - show success message and auto-redirect
         Alert.alert(
-          'Registrasi Berhasil!', 
+          'Registrasi akun anda berhasil!', 
           'Akun Anda telah dibuat. Anda akan diarahkan ke halaman login dalam 2 detik.',
           [
             {
-              text: 'Login Sekarang',
+              text: 'Langkah Makna Dimulai Sekarang',
               onPress: () => {
+                // Clear any existing timeout
+                if (redirectTimeoutRef.current) {
+                  clearTimeout(redirectTimeoutRef.current);
+                }
                 // Immediate redirect to sign in screen
-                setCurrentScreen('signin');
-                // Keep email for convenience, clear others
-                setPassword('');
-                setConfirmPassword('');
-                setFirstName('');
-                setLastName('');
+                redirectToSignIn();
               }
             }
           ]
         );
         
         // Auto-redirect after 2 seconds if user doesn't press button
-        setTimeout(() => {
-          setCurrentScreen('signin');
-          // Keep email for convenience, clear others
-          setPassword('');
-          setConfirmPassword('');
-          setFirstName('');
-          setLastName('');
+        redirectTimeoutRef.current = setTimeout(() => {
+          redirectToSignIn();
         }, 2000);
       }
     } catch (err) {
